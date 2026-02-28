@@ -19,7 +19,10 @@ function applyLayout(data) {
   const hero = document.getElementById("hero");
   if (!hero) return;
 
-  const heroLayout = data?.layout?.hero_layout || "image_right";
+  let heroLayout = "image_right";
+  if (data && data.layout && data.layout.hero_layout) {
+    heroLayout = data.layout.hero_layout;
+  }
 
   // Allow-list to prevent typos breaking layout
   const allowed = new Set(["image_right", "image_left", "stacked"]);
@@ -109,15 +112,18 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
   // Contact
   const phoneText = document.getElementById("phoneText");
   const phoneLink = document.getElementById("phoneLink");
-  phoneText.textContent = data.contact?.phone || "";
-  phoneLink.href = data.contact?.phone ? `tel:${data.contact.phone.replace(/\s+/g, "")}` : "#";
+  const contact = data && data.contact ? data.contact : {};
+  const phone = contact.phone ? String(contact.phone) : "";
+  phoneText.textContent = phone;
+  phoneLink.href = phone ? `tel:${phone.replace(/\s+/g, "")}` : "#";
 
   const emailText = document.getElementById("emailText");
   const emailLink = document.getElementById("emailLink");
-  emailText.textContent = data.contact?.email || "";
-  emailLink.href = data.contact?.email ? `mailto:${data.contact.email}` : "#";
-
-  document.getElementById("addressText").textContent = data.contact?.address || "";
+  const email = contact.email ? String(contact.email) : "";
+  emailText.textContent = email;
+  emailLink.href = email ? `mailto:${email}` : "#";
+  
+  document.getElementById("addressText").textContent = contact.address ? String(contact.address) : "";
 }
 
 document.addEventListener("DOMContentLoaded", loadSite);
