@@ -97,6 +97,7 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
   emailLink.href = data.contact?.email ? `mailto:${data.contact.email}` : "#";
 
   document.getElementById("addressText").textContent = data.contact?.address || "";
+  document.addEventListener("DOMContentLoaded", loadSite);
 }
 
 loadSite();
