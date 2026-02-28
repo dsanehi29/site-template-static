@@ -1,13 +1,33 @@
 {
   "business_name": "Your Business Name",
   "headline": "Main headline goes here",
-  "subheadline": "Short supporting sentence explaining the offer",
-  "cta_text": "Get Started",
-  "cta_link": "#",
-  "features": [
-    "First key benefit",
-    "Second key benefit",
-    "Third key benefit"
+  "subheadline": "Short supporting sentence explaining the offer.",
+  "cta_text": "Call now",
+  "cta_link": "tel:+442000000000",
+
+  "services": [
+    { "title": "Service 1", "desc": "Short one-line description." },
+    { "title": "Service 2", "desc": "Short one-line description." },
+    { "title": "Service 3", "desc": "Short one-line description." }
   ],
-  "template_version": "1.1"
+
+  "testimonials": [
+    { "name": "A Customer", "text": "Short review text goes here." },
+    { "name": "B Customer", "text": "Short review text goes here." },
+    { "name": "C Customer", "text": "Short review text goes here." }
+  ],
+
+  "faqs": [
+    { "q": "Question 1?", "a": "Short answer." },
+    { "q": "Question 2?", "a": "Short answer." },
+    { "q": "Question 3?", "a": "Short answer." }
+  ],
+
+  "contact": {
+    "phone": "+44 20 0000 0000",
+    "email": "hello@example.com",
+    "address": "Hounslow, London"
+  },
+
+  "template_version": "1.2"
 }
