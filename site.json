@@ -4,8 +4,8 @@
   "subheadline": "Short supporting sentence explaining the offer.",
   "cta_text": "Call now",
   "cta_link": "tel:+442000000000",
-  "logo_url": "",
-  "hero_image_url": "",
+  "logo_url": "assets/logo.png",
+  "hero_image_url": "assets/hero.jpg",
 
   "services": [
     { "title": "Service 1", "desc": "Short one-line description." },
