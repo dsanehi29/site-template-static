@@ -1,3 +1,16 @@
+const DEFAULT_LAYOUT = {
+  hero_layout: "image_right",
+  spacing: "normal",
+  section_order: ["services", "testimonials", "faqs", "contact"],
+};
+
+const DEFAULT_COMPONENTS = {
+  show_services: true,
+  show_testimonials: true,
+  show_faqs: true,
+  show_contact: true,
+};
+
 function applyTheme(site) {
   const theme = site.theme || {};
   const root = document.documentElement;
@@ -16,60 +29,112 @@ function applyTheme(site) {
 }
 
 function applyLayout(data) {
+  const layout = data && data.layout ? data.layout : {};
   const hero = document.getElementById("hero");
-  if (!hero) return;
 
-  let heroLayout = "image_right";
-  if (data && data.layout && data.layout.hero_layout) {
-    heroLayout = data.layout.hero_layout;
+  if (hero) {
+    const allowedHeroLayouts = new Set(["image_right", "image_left", "stacked"]);
+    const heroMode = allowedHeroLayouts.has(layout.hero_layout) ? layout.hero_layout : DEFAULT_LAYOUT.hero_layout;
+
+    hero.classList.remove("hero--image-right", "hero--image-left", "hero--stacked");
+
+    if (heroMode === "image_left") hero.classList.add("hero--image-left");
+    else if (heroMode === "stacked") hero.classList.add("hero--stacked");
+    else hero.classList.add("hero--image-right");
   }
 
-  // Allow-list to prevent typos breaking layout
-  const allowed = new Set(["image_right", "image_left", "stacked"]);
-  const mode = allowed.has(heroLayout) ? heroLayout : "image_right";
+  const body = document.body;
+  const allowedSpacing = new Set(["compact", "normal", "relaxed"]);
+  const spacingMode = allowedSpacing.has(layout.spacing) ? layout.spacing : DEFAULT_LAYOUT.spacing;
 
-  // Remove any existing layout mode classes
-  hero.classList.remove("hero--image-right", "hero--image-left", "hero--stacked");
+  body.classList.remove("spacing--compact", "spacing--normal", "spacing--relaxed");
+  body.classList.add(`spacing--${spacingMode}`);
 
-  // Apply selected mode
-  if (mode === "image_left") hero.classList.add("hero--image-left");
-  else if (mode === "stacked") hero.classList.add("hero--stacked");
-  else hero.classList.add("hero--image-right");
+  applySectionOrder(layout.section_order);
+}
+
+function applySectionOrder(sectionOrder) {
+  const container = document.getElementById("sectionContainer");
+  if (!container) return;
+
+  const allowedSections = DEFAULT_LAYOUT.section_order;
+  const provided = Array.isArray(sectionOrder) ? sectionOrder : [];
+
+  const sanitizedOrder = provided.filter(
+    (sectionName, index) =>
+      typeof sectionName === "string" && allowedSections.includes(sectionName) && provided.indexOf(sectionName) === index,
+  );
+
+  const finalOrder = [...sanitizedOrder, ...allowedSections.filter((name) => !sanitizedOrder.includes(name))];
+
+  finalOrder.forEach((sectionName) => {
+    const sectionNode = container.querySelector(`[data-section="${sectionName}"]`);
+    if (sectionNode) {
+      container.appendChild(sectionNode);
+    }
+  });
+}
+
+function applySectionToggles(data) {
+  const components = data && data.components ? data.components : {};
+  const toggleConfig = {
+    services: components.show_services,
+    testimonials: components.show_testimonials,
+    faqs: components.show_faqs,
+    contact: components.show_contact,
+  };
+
+  const defaults = {
+    services: DEFAULT_COMPONENTS.show_services,
+    testimonials: DEFAULT_COMPONENTS.show_testimonials,
+    faqs: DEFAULT_COMPONENTS.show_faqs,
+    contact: DEFAULT_COMPONENTS.show_contact,
+  };
+
+  Object.entries(defaults).forEach(([sectionName, defaultValue]) => {
+    const section = document.querySelector(`[data-section="${sectionName}"]`);
+    if (!section) return;
+
+    const configuredValue = toggleConfig[sectionName];
+    const shouldShow = typeof configuredValue === "boolean" ? configuredValue : defaultValue;
+
+    section.style.display = shouldShow ? "" : "none";
+  });
 }
 
 async function loadSite() {
   const res = await fetch("site.json");
-  const data = await res.json(); 
+  const data = await res.json();
+
   applyTheme(data);
   applyLayout(data);
+  applySectionToggles(data);
 
-  // Basic fields
   document.getElementById("businessName").textContent = data.business_name || "";
-  // Logo
-const logoEl = document.getElementById("logo");
-if (data.logo_url && data.logo_url.trim() !== "") {
-  logoEl.src = data.logo_url;
-  logoEl.style.display = "inline-block";
-} else {
-  logoEl.style.display = "none";
-}
 
-// Hero image
-const heroImgEl = document.getElementById("heroImage");
-const heroMediaEl = document.querySelector(".hero-media");
-if (data.hero_image_url && data.hero_image_url.trim() !== "") {
-  heroImgEl.src = data.hero_image_url;
-  heroMediaEl.style.display = "block";
-} else {
-  heroMediaEl.style.display = "none";
-}
+  const logoEl = document.getElementById("logo");
+  if (data.logo_url && data.logo_url.trim() !== "") {
+    logoEl.src = data.logo_url;
+    logoEl.style.display = "inline-block";
+  } else {
+    logoEl.style.display = "none";
+  }
+
+  const heroImgEl = document.getElementById("heroImage");
+  const heroMediaEl = document.querySelector(".hero-media");
+  if (data.hero_image_url && data.hero_image_url.trim() !== "") {
+    heroImgEl.src = data.hero_image_url;
+    heroMediaEl.style.display = "block";
+  } else {
+    heroMediaEl.style.display = "none";
+  }
+
   document.getElementById("footerName").textContent = data.business_name || "";
   document.getElementById("pageTitle").textContent = data.business_name || "Website";
 
   document.getElementById("headline").textContent = data.headline || "";
   document.getElementById("subheadline").textContent = data.subheadline || "";
 
-  // CTA buttons
   const cta = document.getElementById("cta");
   cta.textContent = data.cta_text || "Contact";
   cta.href = data.cta_link || "#";
@@ -78,10 +143,8 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
   ctaTop.textContent = data.cta_text || "Contact";
   ctaTop.href = data.cta_link || "#";
 
-  // Template version
   document.getElementById("tplVer").textContent = data.template_version || "";
 
-  // Services
   const servicesEl = document.getElementById("services");
   servicesEl.innerHTML = "";
   (data.services || []).forEach((s) => {
@@ -90,7 +153,6 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
     servicesEl.appendChild(card);
   });
 
-  // Testimonials
   const testEl = document.getElementById("testimonials");
   testEl.innerHTML = "";
   (data.testimonials || []).forEach((t) => {
@@ -99,7 +161,6 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
     testEl.appendChild(card);
   });
 
-  // FAQs
   const faqEl = document.getElementById("faqs");
   faqEl.innerHTML = "";
   (data.faqs || []).forEach((f) => {
@@ -109,7 +170,6 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
     faqEl.appendChild(item);
   });
 
-  // Contact
   const phoneText = document.getElementById("phoneText");
   const phoneLink = document.getElementById("phoneLink");
   const contact = data && data.contact ? data.contact : {};
@@ -122,7 +182,7 @@ if (data.hero_image_url && data.hero_image_url.trim() !== "") {
   const email = contact.email ? String(contact.email) : "";
   emailText.textContent = email;
   emailLink.href = email ? `mailto:${email}` : "#";
-  
+
   document.getElementById("addressText").textContent = contact.address ? String(contact.address) : "";
 }
 

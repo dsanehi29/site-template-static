@@ -30,7 +30,7 @@
     "email": "hello@example.com",
     "address": "Hounslow, London"
   },
-  "template_version": "1.3",
+  "template_version": "1.4",
   "theme": {
     "primary_color": "#FF0000",
     "background_color": "#FFFFFF",
@@ -43,7 +43,9 @@
     "section_order": ["services", "testimonials", "faqs", "contact"]
   },
   "components": {
+    "show_services": true,
     "show_testimonials": true,
-    "show_faqs": true
+    "show_faqs": true,
+    "show_contact": true
   }
 }
