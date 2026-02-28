@@ -5,7 +5,7 @@
   "cta_text": "Call now",
   "cta_link": "tel:+442000000000",
   "logo_url": "assets/logo.png",
-  "hero_image_url": "assets/hero.jpg",
+  "hero_image_url": "assets/hero.png",
 
   "services": [
     { "title": "Service 1", "desc": "Short one-line description." },
