@@ -38,7 +38,7 @@
     "font_family": "system"
   },
   "layout": {
-    "hero_layout": "image_right",
+    "hero_layout": "image_left",
     "spacing": "normal",
     "section_order": ["services", "testimonials", "faqs", "contact"]
   },
