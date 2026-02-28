@@ -3,6 +3,8 @@
   --bg:#FFFFFF;
   --text:#0F172A;
   --font:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --hero-space:100px;
+  --section-space:70px;
 }
 * {
   box-sizing: border-box;
@@ -17,6 +19,21 @@ body {
   background: var(--bg);
 }
 
+body.spacing--compact {
+  --hero-space: 72px;
+  --section-space: 48px;
+}
+
+body.spacing--normal {
+  --hero-space: 100px;
+  --section-space: 70px;
+}
+
+body.spacing--relaxed {
+  --hero-space: 130px;
+  --section-space: 92px;
+}
+
 .container {
   max-width: 1100px;
   margin: auto;
@@ -24,7 +41,7 @@ body {
 }
 
 .section {
-  padding: 70px 0;
+  padding: var(--section-space) 0;
 }
 
 .section-muted {
@@ -69,10 +86,7 @@ p {
 }
 
 .hero {
-  padding: 100px 0;
-  display: flex;
-  gap: 2rem;
-  align-items: center;
+  padding: var(--hero-space) 0;
 }
 
 .btn {
@@ -157,15 +171,14 @@ p {
 .muted {
   color: #888;
 }
-/* Logo */
+
 .logo {
   height: 34px;
   width: auto;
   margin-right: 10px;
-  display: none; /* hidden until logo_url is set */
+  display: none;
 }
 
-/* Hero layout */
 .hero-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -174,7 +187,7 @@ p {
 }
 
 .hero-media {
-  display: none; /* hidden until hero_image_url is set */
+  display: none;
 }
 
 .hero-image {
@@ -184,27 +197,31 @@ p {
   border: 1px solid #eee;
 }
 
-/* =====================================================
-   HERO LAYOUT MODES (Controlled by site.json)
-   ===================================================== */
-
-/* Default layout: image on the right */
-.hero--image-right {
-  flex-direction: row;
+.hero--image-right .hero-copy {
+  order: 1;
 }
 
-/* Image on the left */
-.hero--image-left {
-  flex-direction: row-reverse;
+.hero--image-right .hero-media {
+  order: 2;
 }
 
-/* Stacked layout (mobile-style layout) */
-.hero--stacked {
-  flex-direction: column;
-  align-items: flex-start;
+.hero--image-left .hero-copy {
+  order: 2;
 }
 
-/* Mobile */
+.hero--image-left .hero-media {
+  order: 1;
+}
+
+.hero--stacked .hero-grid {
+  grid-template-columns: 1fr;
+}
+
+.hero--stacked .hero-copy,
+.hero--stacked .hero-media {
+  order: unset;
+}
+
 @media (max-width: 820px) {
   .hero-grid {
     grid-template-columns: 1fr;
