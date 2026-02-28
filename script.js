@@ -4,6 +4,24 @@ async function loadSite() {
 
   // Basic fields
   document.getElementById("businessName").textContent = data.business_name || "";
+  // Logo
+const logoEl = document.getElementById("logo");
+if (data.logo_url && data.logo_url.trim() !== "") {
+  logoEl.src = data.logo_url;
+  logoEl.style.display = "inline-block";
+} else {
+  logoEl.style.display = "none";
+}
+
+// Hero image
+const heroImgEl = document.getElementById("heroImage");
+const heroMediaEl = document.querySelector(".hero-media");
+if (data.hero_image_url && data.hero_image_url.trim() !== "") {
+  heroImgEl.src = data.hero_image_url;
+  heroMediaEl.style.display = "block";
+} else {
+  heroMediaEl.style.display = "none";
+}
   document.getElementById("footerName").textContent = data.business_name || "";
   document.getElementById("pageTitle").textContent = data.business_name || "Website";
 
