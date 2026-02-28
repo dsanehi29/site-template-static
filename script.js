@@ -1,6 +1,23 @@
+function applyTheme(site) {
+  const theme = site.theme || {};
+  const root = document.documentElement;
+
+  if (theme.primary_color) root.style.setProperty("--primary", theme.primary_color);
+  if (theme.background_color) root.style.setProperty("--bg", theme.background_color);
+  if (theme.text_color) root.style.setProperty("--text", theme.text_color);
+
+  if (theme.font_family) {
+    if (theme.font_family === "system") {
+      root.style.setProperty("--font", "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif");
+    } else {
+      root.style.setProperty("--font", `${theme.font_family}, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif`);
+    }
+  }
+}
 async function loadSite() {
   const res = await fetch("site.json");
-  const data = await res.json();
+  const data = await res.json(); 
+  applyTheme(data);
 
   // Basic fields
   document.getElementById("businessName").textContent = data.business_name || "";
