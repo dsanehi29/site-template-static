@@ -14,10 +14,31 @@ function applyTheme(site) {
     }
   }
 }
+
+function applyLayout(data) {
+  const hero = document.getElementById("hero");
+  if (!hero) return;
+
+  const heroLayout = data?.layout?.hero_layout || "image_right";
+
+  // Allow-list to prevent typos breaking layout
+  const allowed = new Set(["image_right", "image_left", "stacked"]);
+  const mode = allowed.has(heroLayout) ? heroLayout : "image_right";
+
+  // Remove any existing layout mode classes
+  hero.classList.remove("hero--image-right", "hero--image-left", "hero--stacked");
+
+  // Apply selected mode
+  if (mode === "image_left") hero.classList.add("hero--image-left");
+  else if (mode === "stacked") hero.classList.add("hero--stacked");
+  else hero.classList.add("hero--image-right");
+}
+
 async function loadSite() {
   const res = await fetch("site.json");
   const data = await res.json(); 
   applyTheme(data);
+  applyLayout(data);
 
   // Basic fields
   document.getElementById("businessName").textContent = data.business_name || "";
